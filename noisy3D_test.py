@@ -27,7 +27,7 @@ from datetime import datetime
 from tqdm import tqdm
 
 ###     Imports             - User-Defined Files
-from generic_agent import GenericAgent as Agent
+from dynamic_models.generic_agent import GenericAgent as Agent
 from iam_models import distance
 
 

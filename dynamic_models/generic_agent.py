@@ -12,10 +12,14 @@ class GenericAgent():
     def __init__(self, agent_id=0, init_position=np.zeros((3,1)), faulty=False, err_vector=None):
         self.agent_id       =   agent_id
         self.position       =   init_position
+        self.est_all        =   np.zeros(self.position.shape)
+        self.errors         =   None
+        # This Mu is for the baseline algorithm
+        self.Mu             =   None
         self.faulty         =   faulty 
         self.error_vector   =   err_vector if (err_vector is not None) else np.zeros(self.position.shape)
         self.neighbor_ids   =   []
-        
+        self.v              =   None
         self.edge_idx       =   []
         
         self.x_cp           =   {}
@@ -23,11 +27,25 @@ class GenericAgent():
 
         self.x_bar          =   []
         self.lam            =   {}
+        # This mu is for shiraz's algorithm
         self.mu             =   {}
         self.x_star         =   {}
         self.w              =   {}
 
         self.misc_dict      =   {}
+
+    def get_discrepancy(self, agents):
+        neighbors = self.get_neighbor()
+        dis = 0
+        for id in neighbors:
+            dis += self.est_all - agents[id].est_all
+        return dis
+    
+    def init_est_all(self, n_agents):
+        self.est_all = np.zeros((n_agents*self.position.shape[0],))
+
+    def init_Mu(self, n_agents):
+        self.Mu = np.zeros((n_agents*self.position.shape[0],))
 
     # Returns estimated position (true pos + error vector)
     def get_estimated_pos(self):
